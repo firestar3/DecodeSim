@@ -72,12 +72,34 @@ function drawField() {
     ctx.stroke();
   }
 
-  // Goals (visual only)
-  ctx.fillStyle = '#800';
-  ctx.fillRect(250, 0, 100, 20);      // Red goal
-  ctx.fillStyle = '#008';
-  ctx.fillRect(250, 580, 100, 20);    // Blue goal
-}
+    // FTC Decode-style angled goals (visual only)
+  // Red alliance (top-left)
+  ctx.fillStyle = '#c00';
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(180, 0);
+  ctx.lineTo(0, 180);
+  ctx.closePath();
+  ctx.fill();
+
+  // Blue alliance (bottom-left)
+  ctx.fillStyle = '#2244cc';
+  ctx.beginPath();
+  ctx.moveTo(0, FIELD);
+  ctx.lineTo(180, FIELD);
+  ctx.lineTo(0, FIELD-180);
+  ctx.closePath();
+  ctx.fill();
+
+  // Red goal zone (right-bottom square)
+  ctx.strokeStyle = '#c00';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(FIELD-200, FIELD-200, 120, 120);
+
+  // Blue goal zone (right-top square)
+  ctx.strokeStyle = '#2244cc';
+  ctx.strokeRect(FIELD-200, 80, 120, 120);
+
 
 function loop() {
   ctx.clearRect(0, 0, FIELD, FIELD);
