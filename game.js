@@ -306,6 +306,7 @@ function update() {
             for (let i = 0; i < 12; i++) { // 12 Green
                 gameState.artifacts.push(new Artifact(Math.random() * (FIELD_WIDTH - 200) + 100, Math.random() * (FIELD_HEIGHT - 200) + 100, 'green'));
             }
+        }
         gameState.lastTime = Date.now();
         let m = Math.floor(gameState.timeLeft / 60);
         let s = gameState.timeLeft % 60;
@@ -525,6 +526,7 @@ requestAnimationFrame(function () {
     update();
     draw();
 });
+
 
 
 
