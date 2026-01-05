@@ -299,6 +299,13 @@ function update() {
     // Time
     if (Date.now() - gameState.lastTime >= 1000) {
         gameState.timeLeft--;
+        if (gamestate.timeleft == 60000){
+            for (let i = 0; i < 24; i++) { // 24 Purple
+                gameState.artifacts.push(new Artifact(Math.random() * (FIELD_WIDTH - 200) + 100, Math.random() * (FIELD_HEIGHT - 200) + 100, 'purple'));
+            }
+            for (let i = 0; i < 12; i++) { // 12 Green
+                gameState.artifacts.push(new Artifact(Math.random() * (FIELD_WIDTH - 200) + 100, Math.random() * (FIELD_HEIGHT - 200) + 100, 'green'));
+            }
         gameState.lastTime = Date.now();
         let m = Math.floor(gameState.timeLeft / 60);
         let s = gameState.timeLeft % 60;
@@ -388,7 +395,7 @@ function checkPattern(team) {
 
     if (match) {
         // BONUS!
-        let bonus = 30;
+        let bonus = 20;
         if (team === 'red') {
             gameState.redScore += bonus;
             document.getElementById('red-score').innerText = gameState.redScore;
@@ -518,3 +525,4 @@ requestAnimationFrame(function () {
     update();
     draw();
 });
+
