@@ -1,119 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>FTC 6x6 Tile Driving Simulator</title>
-  <style>
-    body { margin: 0; background: #111; }
-    canvas { display: block; margin: auto; background: #1e1e1e; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FTC DECODE: 1v1 Arena</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<canvas id="game" width="600" height="600"></canvas>
+    <div id="game-container">
+        <div id="ui-overlay">
+            <div class="hud-panel" id="red-panel">
+                <h2>RED ALLIANCE</h2>
+                <div class="score-box">
+                    <span id="red-score">0</span>
+                    <span class="label">PTS</span>
+                </div>
+                <div class="inventory">
+                    <div class="slot" id="red-slot-1"></div>
+                    <div class="slot" id="red-slot-2"></div>
+                    <div class="slot" id="red-slot-3"></div>
+                </div>
+            </div>
 
-<script>
-// === PURE DRIVING ONLY ===
-// 6x6 tiles, no balls, no scoring, no penalties
+            <div id="center-info">
+                <h1 class="game-title">DECODE</h1>
+                <div id="timer">2:00</div>
+                <div id="obelisk-display">
+                    <span class="label">TARGET PATTERN</span>
+                    <div class="pattern-row" id="target-pattern">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div id="game-message" class="hidden">PRESS SPACE TO START</div>
+            </div>
 
-const TILE = 100;           // 6 x 100px = 600px field
-const FIELD = 600;
-const ROBOT_RADIUS = 18;
-const SPEED = 3;
+            <div class="hud-panel" id="blue-panel">
+                <h2>BLUE ALLIANCE</h2>
+                <div class="score-box">
+                    <span id="blue-score">0</span>
+                    <span class="label">PTS</span>
+                </div>
+                <div class="inventory">
+                    <div class="slot" id="blue-slot-1"></div>
+                    <div class="slot" id="blue-slot-2"></div>
+                    <div class="slot" id="blue-slot-3"></div>
+                </div>
+            </div>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    
+    <div id="controls-help">
+        <div class="control-group">
+            <span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span>
+            <span>MOVE</span>
+            <span class="key">F</span>
+            <span>INTAKE/SHOOT</span>
+        </div>
+        <div class="control-group">
+            <span class="key">↑</span><span class="key">←</span><span class="key">↓</span><span class="key">→</span>
+            <span>MOVE</span>
+            <span class="key">M</span>
+            <span>INTAKE/SHOOT</span>
+        </div>
+    </div>
 
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-
-const keys = {};
-window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
-window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
-
-class Robot {
-  constructor(x, y, color, controls) {
-    this.x = x;
-    this.y = y;
-    this.color = color;
-    this.controls = controls;
-  }
-
-  update() {
-    let dx = 0, dy = 0;
-    if (keys[this.controls.up]) dy -= SPEED;
-    if (keys[this.controls.down]) dy += SPEED;
-    if (keys[this.controls.left]) dx -= SPEED;
-    if (keys[this.controls.right]) dx += SPEED;
-
-    this.x = Math.max(ROBOT_RADIUS, Math.min(FIELD - ROBOT_RADIUS, this.x + dx));
-    this.y = Math.max(ROBOT_RADIUS, Math.min(FIELD - ROBOT_RADIUS, this.y + dy));
-  }
-
-  draw() {
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, ROBOT_RADIUS, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
-// Robots
-const red = new Robot(150, 300, 'red', { up:'w', down:'s', left:'a', right:'d' });
-const blue = new Robot(450, 300, 'blue', { up:'i', down:'k', left:'j', right:'l' });
-
-function drawField() {
-  ctx.strokeStyle = '#444';
-  for (let i = 0; i <= 6; i++) {
-    ctx.beginPath();
-    ctx.moveTo(i * TILE, 0);
-    ctx.lineTo(i * TILE, FIELD);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(0, i * TILE);
-    ctx.lineTo(FIELD, i * TILE);
-    ctx.stroke();
-  }
-
-    // FTC Decode-style angled goals (visual only)
-  // Red alliance (top-left)
-  ctx.fillStyle = '#c00';
-  ctx.beginPath();
-  ctx.moveTo(0, 0);
-  ctx.lineTo(180, 0);
-  ctx.lineTo(0, 180);
-  ctx.closePath();
-  ctx.fill();
-
-  // Blue alliance (bottom-left)
-  ctx.fillStyle = '#2244cc';
-  ctx.beginPath();
-  ctx.moveTo(0, FIELD);
-  ctx.lineTo(180, FIELD);
-  ctx.lineTo(0, FIELD-180);
-  ctx.closePath();
-  ctx.fill();
-
-  // Red goal zone (right-bottom square)
-  ctx.strokeStyle = '#c00';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(FIELD-200, FIELD-200, 120, 120);
-
-  // Blue goal zone (right-top square)
-  ctx.strokeStyle = '#2244cc';
-  ctx.strokeRect(FIELD-200, 80, 120, 120);
-
-
-function loop() {
-  ctx.clearRect(0, 0, FIELD, FIELD);
-
-  drawField();
-  red.update();
-  blue.update();
-  red.draw();
-  blue.draw();
-
-  requestAnimationFrame(loop);
-}
-
-loop();
-</script>
+    <script src="game.js"></script>
 </body>
 </html>
