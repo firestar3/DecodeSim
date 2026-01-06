@@ -299,7 +299,7 @@ function update() {
     // Time
     if (Date.now() - gameState.lastTime >= 1000) {
         gameState.timeLeft--;
-        if (gameState.timeLeft >= 60000 && gameState.timeLeft <= 61000){
+        if (gameState.timeLeft === 60){
             endGame();
             for (let i = 0; i < 12; i++) { // 24 Purple
                 gameState.artifacts.push(new Artifact(Math.random() * (FIELD_WIDTH - 200) + 100, Math.random() * (FIELD_HEIGHT - 200) + 100, 'purple'));
@@ -527,6 +527,7 @@ requestAnimationFrame(function () {
     update();
     draw();
 });
+
 
 
 
